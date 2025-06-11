@@ -1,0 +1,235 @@
+---
+title: "Crime Rates in the US"
+author: "Jade Towgood"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+mathjax: local
+---
+<style type="text/css">
+body p, div, h1, h2, h3, h4, h5 {
+color: black;
+font-family: Modern Computer Roman;
+}
+slides > slide.title-slide hgroup h1 {
+color: #8C1D40;
+}
+h2 {
+color: #8C1D40; 
+}
+</style> 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(datasets)
+library(tinytex)
+library(plotly)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+data("USArrests")
+```
+## Data Set `USArrests`
+This data set displays the violent crime rates per 100,000 residents by US State in 1973. <br>
+<br>
+There are 4 variables with 50 states in this data set: <br>
+
+  - murder <br>
+  - assault <br>
+  - rape <br>
+  - urban population
+
+## The Question
+Is there a correlation between the violent crime rates and each other? <br>
+
+  - rape vs murder <br>
+  - murder vs assault <br>
+  - assault vs rape <br>
+
+## Summary Violent Crimes: Murder
+```{r, echo=FALSE}
+boxplot(USArrests$Murder, horizontal = TRUE, xlab = "Rate (cases/100,000 people)", main = "Murder Crimes", col = "red")
+summary(USArrests$Murder)
+```
+
+## Summary Violent Crimes: Assault
+```{r, echo=FALSE}
+boxplot(USArrests$Assault, horizontal = TRUE, xlab = "Rate (cases/100,000 people)", main = "Assault Crimes", col = "orange")
+summary(USArrests$Assault)
+```
+
+## Summary Violent Crimes: Rape
+```{r, echo=FALSE}
+boxplot(USArrests$Rape, horizontal = TRUE, xlab = "Rate (cases/100,000 people)", main = "Rape Crimes", col = "gold")
+summary(USArrests$Rape)
+```
+## Explanation of Code: Boxplots
+```{r, eval=FALSE, echo=TRUE}
+boxplot(USArrests$Murder, horizontal = TRUE, xlab = "Rate 
+        (cases/100,000 people)", main = "Murder Crimes", col = "red") 
+summary(USArrests$Murder) 
+
+boxplot(USArrests$Assault, horizontal = TRUE, xlab = "Rate 
+        (cases/100,000 people)", main = "Assault Crimes", col = 
+          "orange") 
+summary(USArrests$Assault) 
+
+boxplot(USArrests$Rape, horizontal = TRUE, xlab = "Rate 
+        (cases/100,000 people)", main = "Rape Crimes", col = "gold") 
+summary(USArrests$Rape) 
+```
+I decided to do 3 separate boxplots and summaries to make the data easier
+to read and understand it instead of putting it all together. I excluded 
+the urban population data because it was not a variable I was discussing.
+
+## Scatter Plots: Rape vs Murder
+```{r}
+murderRates <- USArrests$Murder
+rapeRates <- USArrests$Rape
+
+x = rapeRates
+y = murderRates
+
+plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  add_trace(x = rapeRates, y = predict(lm(murderRates~rapeRates)), mode = "lines", type = "scatter", line = list(color = "Red")) %>%
+        layout(title = "Correlation between Murder and Rape Crimes in the US", xaxis = list(title = "Rape Rates"), yaxis = list(title = "Murder Rates"))
+```
+This scatter plot displays a positive correlation between the rate of rape and murder crimes.
+
+## Scatter Plots: Assault vs Murder
+```{r}
+assultRates <- USArrests$Assault
+murderRates <- USArrests$Murder
+
+x = assultRates
+y = murderRates
+
+plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  add_trace(x = assultRates, y = predict(lm(murderRates~assultRates)), mode = "lines", type = "scatter", line = list(color = "Red")) %>%
+        layout(title = "Correlation between Assault and Murder Crimes in the US", xaxis = list(title = "Assault Rates"), yaxis = list(title = "Murder Rates"))
+```
+This scatter plot displays a positive correlation between the rate of assault and murder crimes.
+
+## Scatter Plots: Assault vs Rape
+```{r}
+assultRates <- USArrests$Assault
+rapeRates <- USArrests$Rape
+
+x = assultRates
+y = rapeRates
+
+plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  add_trace(x = assultRates, y = predict(lm(rapeRates~assultRates)), mode = "lines", type = "scatter", line = list(color = "Red")) %>%
+        layout(title = "Correlation between Assault and Rape Crimes in the US", xaxis = list(title = "Assault Rates"), yaxis = list(title = "Rape Rates"))
+```
+This scatter plot displays a positive correlation between the rate of assault and rape crimes.
+
+## Explanation of Code: Scatterplots
+```{r, eval=FALSE, echo=TRUE}
+murderRates <- USArrests$Murder
+rapeRates <- USArrests$Rape
+
+x = rapeRates
+y = murderRates
+
+plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  add_trace(x = rapeRates, y = predict(lm(murderRates~rapeRates)), 
+            mode = "lines", type = "scatter", line = list(color = 
+            "Red")) %>%
+        layout(title = "Correlation between Murder and Rape Crimes in 
+        the US", xaxis = list(title = "Rape Rates"), yaxis = list
+          (title = "Murder Rates"))
+```
+
+## Cont.
+```{r, eval=FALSE, echo=TRUE}
+assultRates <- USArrests$Assault
+murderRates <- USArrests$Murder
+
+x = assultRates
+y = murderRates
+
+plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  add_trace(x = assultRates, y = predict(lm(murderRates~assultRates)), 
+            mode = "lines", type = "scatter", line = list(color = 
+            "Red")) %>%
+        layout(title = "Correlation between Assault and Murder Crimes 
+        in the US", xaxis = list(title = "Assault Rates"), yaxis = 
+          list(title = "Murder Rates"))
+```
+
+## Cont.
+```{r, eval=FALSE, echo=TRUE}
+assultRates <- USArrests$Assault
+rapeRates <- USArrests$Rape
+
+x = assultRates
+y = rapeRates
+
+plot_ly(x = x, y = y, type = "scatter", mode = "markers") %>%
+  add_trace(x = assultRates, y = predict(lm(rapeRates~assultRates)), 
+            mode = "lines", type = "scatter", line = list(color = 
+            "Red")) %>%
+        layout(title = "Correlation between Assault and Rape Crimes 
+        in the US", xaxis = list(title = "Assault Rates"), yaxis = 
+          list(title = "Rape Rates"))
+```
+I decided that scatterplots would be the best way to analyze whether there
+was a correlation with a linear regression model included. 
+
+## Linear Regression Model: \(R^2\) Value
+```{r, echo=FALSE}
+assultRates <- USArrests$Assault
+rapeRates <- USArrests$Rape
+murderRates <- USArrests$Murder
+
+x1 = assultRates
+y1 = rapeRates
+y2 = murderRates
+```
+Rape vs Murder
+```{r}
+lm_model <- lm(y2~y1, data = USArrests)
+r_squared <- summary(lm_model)$r.squared
+cat("R-squared value:", r_squared, "\n")
+```
+Assault vs Murder
+```{r}
+lm_model <- lm(y2~x1, data = USArrests)
+r_squared <- summary(lm_model)$r.squared
+cat("R-squared value:", r_squared, "\n")
+```
+Assault vs Rape
+```{r}
+lm_model <- lm(y1~x1, data = USArrests)
+r_squared <- summary(lm_model)$r.squared
+cat("R-squared value:", r_squared, "\n")
+```
+
+## Explanation of Code: Linear Regression Model
+```{r, eval=FALSE, echo=TRUE}
+assultRates <- USArrests$Assault
+rapeRates <- USArrests$Rape
+murderRates <- USArrests$Murder
+
+x1 = assultRates
+y1 = rapeRates
+y2 = murderRates
+
+lm_model <- lm(y2~y1, data = USArrests)
+r_squared <- summary(lm_model)$r.squared
+cat("R-squared value:", r_squared, "\n")
+```
+
+
+## Conclusion
+Assuming: <br>
+
+- The size of error doesn't change significantly across the values. <br>
+- There are no hidden relationships among the variables. <br>
+- The data has a normal distribution. <br>
+- The Relationship between the variables are linear. <br>
+<br>
+
+There seems to be a positive correlation between all crimes in this data set, which answers my question of whether each violent crime has some type of correlation with one another.
