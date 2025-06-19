@@ -1,4 +1,4 @@
-# 📊 Crime Rates in the US
+# 📊 Crime Rates in the US using R
 This project explores violent crime rates across the United States using the USArrests dataset. The data contains statistics for all 50 US states from 1973, tracking rates per 100,000 residents for Murder, Assault, Rape, and Urban Population.
 
 ## 🧠 Objective
